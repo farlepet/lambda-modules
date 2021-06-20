@@ -13,6 +13,8 @@ KERNEL      = $(MAINDIR)/../lambda-kern
 KERNEL_INC  = $(KERNEL)/kernel/inc
 KERNEL_ARCH = $(KERNEL)/kernel/arch/x86/inc
 
+MODREQ      = $(file < $(MODDIR)/module.deps)
+
 MODSHARED   = $(subst .mod,.shared,$(MODOUT))
 
 SRCS        = $(wildcard $(MODDIR)/*.c)
