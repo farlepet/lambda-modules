@@ -12,7 +12,7 @@ export MODULESDIR
 
 .PHONY: all clean
 
-all: $(OUTDIR) $(MODULE_OBJS)
+all: utils/modutil/modutil $(OUTDIR) $(MODULE_OBJS)
 
 .SECONDEXPANSION:
 $(OUTDIR)/%.mod: $(MODULESDIR)/$$(subst .,/,%).mod
@@ -23,9 +23,14 @@ $(OUTDIR)/%.mod: $(MODULESDIR)/$$(subst .,/,%).mod
 		$(MAKE) -s -f module.mk MODDIR=$< MODOUT=$@ OUTDIR=$(OUTDIR);     \
 	fi
 
+utils/modutil/modutil: $(wildcard utils/modutil/src/*.c) $(wildcard utils/modutil/inc/*.h)
+	@echo -e "\033[32m\033[1mMODUTIL\033[0m"
+	@cd utils/modutil; $(MAKE)
+
 $(OUTDIR):
 	@mkdir $(OUTDIR)
 
 clean:
-	rm -f $(MODULE_OBJS)
-	rm -f $(MODULE_COBJ)
+	@rm -f $(MODULE_OBJS)
+	@rm -f $(MODULE_COBJ)
+	@cd utils/modutil; $(MAKE) clean
