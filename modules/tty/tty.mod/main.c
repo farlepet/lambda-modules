@@ -11,7 +11,7 @@
 #define BUFFER_SZ 64
 
 static int _dev_in(tty_handle_t *hand, uint8_t b) {
-    fs_write(hand->buff_in, 0, 1, &b);
+    fs_write(&hand->buff_in, 0, 1, &b);
     return 0;
 }
 
@@ -25,17 +25,24 @@ tty_handle_t *tty_create() {
 
     memset(hand, 0, sizeof(tty_handle_t));
 
-    hand->buff_in = stream_create(BUFFER_SZ);
-    if(!hand->buff_in) {
+    kfile_t *_in  = stream_create(BUFFER_SZ);
+    if(!_in) {
         kfree(hand);
         return NULL;
     }
-    hand->buff_out = stream_create(BUFFER_SZ);
-    if(!hand->buff_out) {
-        /* TODO: Destroy stream */
+    kfile_t *_out = stream_create(BUFFER_SZ);
+    if(!_out) {
+        /* TODO: Destroy _in */
         kfree(hand);
         return NULL;
     }
+
+    hand->buff_in.open_flags  = OFLAGS_READ | OFLAGS_WRITE;
+    hand->buff_out.open_flags = OFLAGS_READ | OFLAGS_WRITE;
+
+    /* TODO: Check result, and potentially create two open files */
+    fs_open(_in,  &hand->buff_in);
+    fs_open(_out, &hand->buff_out);
 
     /* Default device input handler function */
     hand->dev_in = _dev_in;
@@ -43,7 +50,7 @@ tty_handle_t *tty_create() {
     return hand;
 }
 
-static int mod_func(uint32_t func, void *data __unused) {
+int mod_func(uint32_t func, void *data __unused) {
     switch(func) {
         case LAMBDA_MODFUNC_START:
             kerror(ERR_BOOTINFO, "Initializing TTY driver\n");
@@ -57,24 +64,3 @@ static int mod_func(uint32_t func, void *data __unused) {
 
     return 0;
 }
-
-
-MODULE_HEADER = {
-    .head_magic   = LAMBDA_MODULE_HEAD_MAGIC,
-    .head_version = LAMBDA_MODULE_HEAD_VERSION,
-    .kernel       = LAMBDA_VERSION,
-    .function     = &mod_func,
-
-    .metadata     = {
-        .ident        = "tty.tty",
-        .name         = "TTY support module",
-        .description  = "Implements base support for creating and managing TTYs",
-        .license      = "MIT",
-        .authors      = (char *[]){
-            "Peter Farley <far.peter1@gmail.com>",
-            NULL
-        },
-        .requirements = NULL
-    },
-
-};

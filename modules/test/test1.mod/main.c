@@ -11,7 +11,7 @@ static void _mod_thread(void *data __unused) {
     }
 }
 
-static int mod_func(uint32_t func, void *data) {
+int mod_func(uint32_t func, void *data) {
     switch(func) {
         case LAMBDA_MODFUNC_START:
             kerror(ERR_BOOTINFO, "BIG TEST\n");
@@ -28,24 +28,3 @@ static int mod_func(uint32_t func, void *data) {
 
     return 0;
 }
-
-
-MODULE_HEADER = {
-    .head_magic   = LAMBDA_MODULE_HEAD_MAGIC,
-    .head_version = LAMBDA_MODULE_HEAD_VERSION,
-    .kernel       = LAMBDA_VERSION,
-    .function     = &mod_func,
-
-    .metadata     = {
-        .ident        = "test.test1",
-        .name         = "Test Module",
-        .description  = "Module for testing Lambda module loading",
-        .license      = "MIT",
-        .authors      = (char *[]){
-            "Peter Farley <far.peter1@gmail.com>",
-            NULL
-        },
-        .requirements = NULL
-    },
-
-};

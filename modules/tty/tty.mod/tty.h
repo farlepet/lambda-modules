@@ -11,8 +11,8 @@ struct tty_handle {
     /* TODO: Think of better function names? */
     int (*dev_in) (tty_handle_t *, uint8_t); /** Device writing to TTY (input) */
 
-    kfile_t *buff_in;
-    kfile_t *buff_out;
+    kfile_hand_t buff_in;
+    kfile_hand_t buff_out;
 
     void *data; /** Data - meaning dependant on the underlying driver */
 };

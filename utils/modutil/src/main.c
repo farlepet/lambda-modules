@@ -102,7 +102,7 @@ static int _common_deps(ljson_t *json) {
             fprintf(stderr, "Non-string type in 'requirements' array!\n");
             return 1;
         }
-        printf("%s\n", reqarr->items[i].str);
+        printf("%s.mod\n", reqarr->items[i].str);
     }
 
     return 0;
@@ -171,12 +171,14 @@ static int _common_cgen(ljson_t *json) {
     reqs = _item->array;
     
 
-    dprintf(fd, "MODULE_HEADER = {\n"
+    dprintf(fd, "#include <lambda/mod/module.h>\n\n"
+                "extern int mod_func(uint32_t, void *);\n\n"
+                "MODULE_HEADER = {\n"
                 "    .head_magic   = LAMBDA_MODULE_HEAD_MAGIC,\n"
                 "    .head_version = LAMBDA_MODULE_HEAD_VERSION,\n"
                 "    .kernel       = LAMBDA_VERSION,\n"
                 "    .function     = &mod_func,\n"
-                "    .metadata {\n");
+                "    .metadata     = {\n");
     dprintf(fd, "        .ident       = \"%s\",\n"
                 "        .name        = \"%s\",\n"
                 "        .description = \"%s\",\n"
