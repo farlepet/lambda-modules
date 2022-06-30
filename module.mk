@@ -37,7 +37,7 @@ CFLAGS     += -m32 -nostdlib -nostdinc -ffreestanding \
 			  -I$(KERNEL_INC) -I$(KERNEL_ARCH)\
 			  -iquote $(MODULESDIR)
 ASFLAGS    = -m32
-LDFLAGS     = -melf_i386 -l:lambda.shared --no-dynamic-linker -pic -L$(KERNEL)/build -e0x0 -shared
+LDFLAGS     = -melf_i386 -l:lambda.shared --no-dynamic-linker -pic -L$(KERNEL)/build/x86/ia32/pc -e0x0 -shared
 
 ifeq ($(CC), clang)
 CFLAGS    += -Wno-incompatible-library-redeclaration 
