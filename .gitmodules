@@ -1,3 +1,0 @@
-[submodule "utils/modutil/lambda-json"]
-	path = utils/modutil/lambda-json
-	url = git@github.com:farlepet/lambda-json.git
